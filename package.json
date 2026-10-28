@@ -1,0 +1,55 @@
+{
+  "name": "dialld-desktop",
+  "version": "2.0.0",
+  "description": "DIALLD — capture 10 seconds from your console, get an instrument + preset recommendation for every channel, and apply it over OSC.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "smoke": "electron . --smoke-test",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "audify": "1.10.1",
+    "onnxruntime-node": "1.29.0",
+    "osc": "2.4.5"
+  },
+  "devDependencies": {
+    "electron": "44.9.2",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.dialld.desktop",
+    "productName": "DIALLD",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "renderer/**/*",
+      "models/**/*"
+    ],
+    "asarUnpack": [
+      "models/**/*",
+      "node_modules/onnxruntime-node/**/*",
+      "node_modules/audify/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "DIALLD records a few seconds of each console input to identify the instrument on it."
+      }
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "allowScripts": {
+    "audify@1.10.1": true,
+    "onnxruntime-node@1.29.0": true,
+    "electron-winstaller@5.4.0": true,
+    "@serialport/bindings-cpp": false
+  }
+}

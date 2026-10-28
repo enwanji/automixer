@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.venv/
+training/.venv/
+training/data/
+training/*.npz
+models/classifier-head.json

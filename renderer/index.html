@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<title>DIALLD</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="nameplate">
+    <div class="mark">DIAL<span>LD</span></div>
+    <div class="sub">Capture · Identify · Apply</div>
+  </div>
+  <div class="console-controls">
+    <select id="profile" title="Console type"></select>
+    <input type="text" id="host" class="mono" size="13" placeholder="console IP" title="Console IP address (Find searches the network for it)" spellcheck="false" list="consoleList">
+    <datalist id="consoleList"></datalist>
+    <input type="text" id="port" class="mono" size="5" title="Console OSC port" spellcheck="false">
+    <button class="btn ghost" id="findBtn" title="Search every network port for the console">Find</button>
+    <button class="btn" id="connectBtn">Connect</button>
+    <div class="conn"><span class="dot off" id="connDot"></span><span id="connLabel">Console offline</span></div>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden></div>
+
+<main>
+  <section class="panel setup">
+    <div class="field grow">
+      <label for="device">Input device</label>
+      <div class="row">
+        <select id="device"><option value="">Loading audio devices…</option></select>
+        <button class="btn icon" id="refreshDevices" title="Refresh device list">↻</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="channelCount">Channels</label>
+      <input type="number" id="channelCount" min="1" max="128" value="16" class="mono">
+    </div>
+    <div class="field">
+      <label for="firstInput">From input</label>
+      <input type="number" id="firstInput" min="1" value="1" class="mono">
+    </div>
+    <div class="field">
+      <label for="firstConsoleCh">→ Console ch</label>
+      <input type="number" id="firstConsoleCh" min="1" value="1" class="mono">
+    </div>
+    <div class="field">
+      <label for="duration">Length</label>
+      <select id="duration">
+        <option value="5">5 s</option>
+        <option value="10" selected>10 s</option>
+        <option value="15">15 s</option>
+        <option value="20">20 s</option>
+      </select>
+    </div>
+    <div class="capture-actions">
+      <button class="btn primary big" id="captureBtn"><span class="rec"></span><span id="captureLabel">Capture 10 s</span></button>
+      <button class="btn ghost small" id="filesBtn" title="Analyze WAV stems instead of a live console (one file per channel)">Test with audio files…</button>
+    </div>
+  </section>
+
+  <section class="panel progress" id="progressPanel" hidden>
+    <div class="progress-head">
+      <span id="progressLabel">Recording…</span>
+      <span class="mono" id="progressTime"></span>
+    </div>
+    <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+    <div class="meters" id="meters"></div>
+  </section>
+
+  <section class="panel results" id="resultsPanel" hidden>
+    <div class="results-head">
+      <label class="check"><input type="checkbox" id="selectAll" checked> <span id="summary"></span></label>
+      <div class="apply-opts">
+        <button class="btn ghost" id="namesBtn" title="Read the channel names (scribble strips) from the console again">↻ Channel names</button>
+        <button class="btn ghost" id="previewBtn" title="Show the OSC that would be sent, without sending">Preview OSC</button>
+        <button class="btn audition" id="auditionBtn">▶ Audition</button>
+        <button class="btn primary" id="applyBtn">Apply</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th><th>Ch</th><th>Level</th><th>Instrument</th><th>Preset</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel empty" id="emptyPanel">
+    <h2>How it works</h2>
+    <ol>
+      <li>Pick the console's USB / Dante / SoundGrid interface and how many channels to listen to.</li>
+      <li>Have the band play (soundcheck or line check) and press <b>Capture</b> — or the <kbd>Space</kbd> bar.</li>
+      <li>Check the suggestion for each channel (click to change it) and press <b>Edit</b> to adjust its EQ and dynamics. Press <b>Audition</b> (<kbd>A</kbd>) to hear the presets on the desk and again to undo, then <b>Apply</b> — or <kbd>Ctrl</kbd>+<kbd>Enter</kbd>.</li>
+    </ol>
+    <p class="muted">Apply sets high-pass, EQ, gate and compressor. It never changes input gain, faders or mutes.</p>
+  </section>
+
+  <details class="panel log">
+    <summary>OSC log <span class="mono muted" id="logCount"></span></summary>
+    <div class="log-actions">
+      <button class="btn ghost small" id="copyLogBtn">Copy</button>
+      <button class="btn ghost small" id="clearLogBtn">Clear</button>
+    </div>
+    <div class="log-body" id="logBody"></div>
+  </details>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
